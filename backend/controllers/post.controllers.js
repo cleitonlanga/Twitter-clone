@@ -190,7 +190,7 @@ export const getFollowingPosts = async (req, res) => {
 
 
     } catch (error) {
-        console.log("Error in getFollowingPosts", error)
+        console.log("Error in getFollowingPosts", error.message)
         res.status(500).json({ error: "Erro no servidor" })
 
     }
@@ -214,7 +214,7 @@ export const getUserPosts = async (req, res) => {
         res.status(200).json(posts)
 
     } catch (error) {
-        console.log("Error in getUserPosts", error)
+        console.log("Error in getUserPosts", error.message)
         res.status(500).json({ error: "Erro do servidor" })
     }
 }
