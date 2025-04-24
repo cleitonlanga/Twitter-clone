@@ -30,27 +30,30 @@ const SignupPage = () => {
           body: JSON.stringify(email, username, fullname, password),
         });
 
-        if (!res.ok) throw new Error("Something went wrong");
         const data = await res.json();
+        if (!res.ok)
+          throw new Error(data.error || "Algo deu errado, tente novamente");
 
-        if (data.error) throw new Error(data.error);
         console.log(data);
         return data;
       } catch (error) {
         console.log(error);
-        toast.error(error.message);
+        throw error;
       }
+    },
+    onSuccess: () => {
+      toast.success("Conta criada com sucesso");
     },
   });
 
   const handleSubmit = (e) => {
-    e.preventfault();
+    e.preventDefault();
     console.log(formData);
     mutate(formData);
   };
 
   const handleInputChage = (e) => {
-    setFormData({ ...formData, [e.target.name]: [e.target.value] });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   return (
@@ -72,6 +75,7 @@ const SignupPage = () => {
             <label className="flex items-center gap-2 rounded input input-bordered">
               <MdOutlineMailOutline />
               <input
+                name="email"
                 type="email"
                 className="grow"
                 placeholder="Email"
@@ -84,6 +88,7 @@ const SignupPage = () => {
                 <FaRegUser />
                 <input
                   type="text"
+                  name="username"
                   className="grow"
                   placeholder="username"
                   onChange={handleInputChage}
@@ -93,6 +98,7 @@ const SignupPage = () => {
               <label className="flex items-center flex-1 gap-2 rounded input input-bordered">
                 <MdDriveFileRenameOutline />
                 <input
+                  name="fullname"
                   type="text"
                   className="grow"
                   placeholder="nome completo"
@@ -104,10 +110,11 @@ const SignupPage = () => {
             <label className="flex items-center gap-2 rounded input input-bordered">
               <MdOutlinePassword />
               <input
+                name="password"
                 type="password"
                 className="grow"
                 placeholder="palavra-passe"
-                onChange={handleSubmit}
+                onChange={handleInputChage}
                 value={formData.password}
               />
             </label>
@@ -116,7 +123,7 @@ const SignupPage = () => {
               type="submit"
               className="w-full text-white rounded-full btn btn-primary "
             >
-              {isPeding ? "Loading..." : "Criar conta"}
+              {isPeding ? "Criando conta..." : "Criar conta"}
             </button>
             {isError && <p className="text-red-500">{error.message}</p>}
           </form>
